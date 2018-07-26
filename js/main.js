@@ -11,7 +11,7 @@ const start = () => {
 const main = () => {
   const canvas = new Canvas(document.getElementById('canvas'));
 
-  canvas.text('SNAQUE', 30, 'greenforest', 50);
+  canvas.text('SNAIQUE', 30, 'greenforest', 50);
   canvas.text('<press any key to start>', 10, '#666', 190);
 
   document.addEventListener('keydown', function listener() {
