@@ -2,6 +2,19 @@ const rand = (a, b) => {
   return a + parseInt(Math.random() * (b - a));
 };
 
+class Point {
+
+  constructor(x, y) {
+    this.x = x;
+    this.y = y;
+  }
+
+  eql(p) {
+    return p.x === this.x && p.y === this.y;
+  }
+
+}
+
 class Game {
 
   constructor() {
@@ -9,10 +22,8 @@ class Game {
 
     const { width, height } = this.canvas.getDimensions();
 
-    this.snake = new Snake(rand(3, width - 6), rand(3, height - 6), 3);
-
-    const fp = this.randomFruitPosition();
-    this.fruit = new Fruit(fp.x, fp.y);
+    this.snake = new Snake(new Point(rand(3, width - 6), rand(3, height - 6)), 3);
+    this.fruit = new Fruit(this.randomFruitPosition());
 
     document.addEventListener('keydown', e => {
       const dir = e.key.toLowerCase().slice('Arrow'.length);
@@ -33,13 +44,13 @@ class Game {
 
     for (let i = 0; i < height; ++i) {
       for (let j = 0; j < width; ++j)
-        cells.push({ x: j, y: i });
+        cells.push(new Point(j, i));
     }
 
-    const availableCells = cells.filter(c => !snakeCells.find(sc => sc.x === c.x && sc.y === c.y));
-    const idx = rand(0, availableCells.length);
+    const availableCells = cells.filter(c => !snakeCells.find(sc => sc.eql(c)));
+    const randIdx = rand(0, availableCells.length);
 
-    return availableCells[idx];
+    return availableCells[randIdx];
   }
 
   redraw() {
@@ -56,10 +67,8 @@ class Game {
     const fp = this.fruit.position;
 
     if (hp.x === fp.x && hp.y === fp.y) {
-      const nfp = this.randomFruitPosition();
-
       this.snake.grow(2);
-      this.fruit = new Fruit(nfp.x, nfp.y);
+      this.fruit = new Fruit(this.randomFruitPosition());
     }
   }
 
@@ -87,11 +96,11 @@ class Canvas {
     this.context.clearRect(0, 0, width, height);
   }
 
-  rect(x, y, size, color) {
+  rect(p, size, color) {
     const { context: ctx } = this;
 
     ctx.fillStyle = color;
-    ctx.fillRect(x * size, y * size, size, size);
+    ctx.fillRect(p.x * size, p.y * size, size, size);
   }
 
 }
@@ -110,48 +119,45 @@ class Rectangle extends Drawable {
     return 10;
   }
 
-  constructor(x, y, color) {
+  constructor(position, color) {
     super();
 
-    this.position = { x, y };
+    this.position = position;
     this.color = color;
   }
 
   draw(canvas) {
-    const size = Rectangle.SIZE();
-    const { position: p, color } = this;
-
-    canvas.rect(p.x, p.y, size, color);
+    canvas.rect(this.position, Rectangle.SIZE(), this.color);
   }
 
 }
 
 class SnakeHead extends Rectangle {
 
-  constructor(x, y) {
-    super(x, y, 'blue');
+  constructor(p) {
+    super(p, 'blue');
   }
 
 }
 
 class SnakeBody extends Rectangle {
 
-  constructor(x, y) {
-    super(x, y, 'magenta');
+  constructor(p) {
+    super(p, 'magenta');
   }
 
 }
 
 class Snake extends Drawable {
 
-  constructor(x, y, size) {
-    super(x, y);
+  constructor(p, size) {
+    super(p);
 
-    this.head = new SnakeHead(x, y);
+    this.head = new SnakeHead(p);
     this.body = [];
 
     for (let i = 1; i < size; ++i)
-      this.body.push(new SnakeBody(x + i, y));
+      this.body.push(new SnakeBody(new Point(p.x + i, p.y)));
 
     this.direction = 'left';
     this.nextDirection = null;
@@ -193,7 +199,7 @@ class Snake extends Drawable {
     if (this.growLeft > 0) {
       const p = body[body.length - 1].position;
 
-      this.body.push(new SnakeBody(p.x, p.y));
+      this.body.push(new SnakeBody(new Point(p.x, p.y)));
       --this.growLeft;
     }
 
@@ -201,10 +207,7 @@ class Snake extends Drawable {
       body[i].position = body[i - 1].position;
 
     body[0].position = head.position;
-    head.position = {
-      x: head.position.x + dx,
-      y: head.position.y + dy,
-    };
+    head.position = new Point(head.position.x + dx, head.position.y + dy);
   }
 
   draw(canvas) {
@@ -223,8 +226,8 @@ class Snake extends Drawable {
 
 class Fruit extends Rectangle {
 
-  constructor(x, y) {
-    super(x, y, 'yellow');
+  constructor(p) {
+    super(p, 'yellow');
   }
 
 }
