@@ -19,7 +19,7 @@ class Game {
   }
 
   onKeyDown(e) {
-    if (this.gameOver) {
+    if (this.gameOver && e.key === ' ') {
       this.gameOver = false;
 
       this.init();
@@ -60,7 +60,7 @@ class Game {
 
     if (this.gameOver) {
       this.canvas.text('Game Over', { size: 30, color: 'black', y: 80 });
-      this.canvas.text('<press any key to restart>', { size: 10, color: '#666', y: 190 });
+      this.canvas.text('<press space to restart>', { size: 10, color: '#666', y: 190 });
     }
 
     this.canvas.text('score: ' + this.score, { size: 10, color: '#666', x: 5, y: 12 });
