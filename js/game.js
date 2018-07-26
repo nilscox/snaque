@@ -61,9 +61,11 @@ class Game {
     if (this.gameOver) {
       this.canvas.text('Game Over', { size: 30, color: 'black', y: 80 });
       this.canvas.text('<press space to restart>', { size: 10, color: '#666', y: 190 });
+      this.canvas.text('score: ' + this.score, { size: 15, color: 'black', y: 120 });
+    } else {
+      this.canvas.text('score: ' + this.score, { size: 10, color: '#666', x: 5, y: 12 });
     }
 
-    this.canvas.text('score: ' + this.score, { size: 10, color: '#666', x: 5, y: 12 });
   }
 
   update() {
