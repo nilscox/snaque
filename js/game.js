@@ -7,6 +7,7 @@ class Game {
 
     this.snake = new Snake(new Point(rand(3, width - 6), rand(3, height - 6)), 3);
     this.fruit = new Fruit(this.randomFruitPosition());
+    this.gameOver = false;
 
     document.addEventListener('keydown', e => {
       const dir = e.key.toLowerCase().slice('Arrow'.length);
@@ -39,20 +40,30 @@ class Game {
   redraw() {
     this.canvas.clear();
 
+    if (this.gameOver)
+      this.canvas.text('Game Over', 'black');
+
     this.snake.draw(this.canvas);
     this.fruit.draw(this.canvas);
   }
 
   update() {
+    if (this.gameOver)
+      return;
+
     this.snake.move();
 
     const hp = this.snake.head.position;
     const fp = this.fruit.position;
+    const { width, height } = this.canvas.getDimensions();
 
     if (hp.x === fp.x && hp.y === fp.y) {
       this.snake.grow(2);
       this.fruit = new Fruit(this.randomFruitPosition());
     }
+
+    if (this.snake.isDead(width, height))
+      this.gameOver = true;
   }
 
 }

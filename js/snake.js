@@ -77,8 +77,8 @@ class Snake extends Drawable {
   }
 
   draw(canvas) {
-    this.head.draw(canvas);
     this.body.forEach(b => b.draw(canvas));
+    this.head.draw(canvas);
   }
 
   getCells() {
@@ -86,6 +86,18 @@ class Snake extends Drawable {
       this.head.position,
       ...this.body.map(b => b.position),
     ];
+  }
+
+  isDead(width, height) {
+    const hp = this.head.position;
+
+    if (this.getCells().filter(c => c.eql(hp)).length > 1)
+      return true;
+
+    if (hp.x < 0 || hp.y < 0 || hp.x >= width || hp.y >= height)
+      return true;
+
+    return false;
   }
 
 }
