@@ -60,8 +60,9 @@ class Game {
 
     if (this.gameOver) {
       this.canvas.text('Game Over', { size: 30, color: 'black', y: 80 });
-      this.canvas.text('<press space to restart>', { size: 10, color: '#666', y: 190 });
       this.canvas.text('score: ' + this.score, { size: 15, color: 'black', y: 120 });
+      this.canvas.text('(best: ' + this.getHighScore() + ')', { size: 12, color: 'black', y: 140 });
+      this.canvas.text('<press space to restart>', { size: 10, color: '#666', y: 190 });
     } else {
       this.canvas.text('score: ' + this.score, { size: 10, color: '#666', x: 5, y: 12 });
     }
@@ -84,10 +85,22 @@ class Game {
       this.score += 3;
     }
 
-    if (this.snake.isDead(width, height))
+    if (this.snake.isDead(width, height)) {
       this.gameOver = true;
-    else
+      this.setHighScore(this.score);
+    } else
       ++this.score;
+  }
+
+  setHighScore(score) {
+    const highscore = this.getHighScore();
+
+    if (score > highscore)
+      localStorage.setItem('highscore', score);
+  }
+
+  getHighScore() {
+    return localStorage.getItem('highscore') || 0;
   }
 
 }
