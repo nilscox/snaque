@@ -27,15 +27,19 @@ class Canvas {
     ctx.fillRect(p.x * size, p.y * size, size, size);
   }
 
-  text(text, fontSize, color, y) {
+  text(text, { size, color, x, y }) {
     const { context: ctx } = this;
     const { width: cw, height: ch } = this.domCanvas;
 
-    ctx.font = fontSize + 'px monospace';
+    ctx.font = size + 'px monospace';
     ctx.fillStyle = color;
 
-    const { width } = ctx.measureText(text);
-    ctx.fillText(text, (cw - width) / 2, y);
+    if (x)
+      ctx.fillText(text, x, y);
+    else {
+      const { width } = ctx.measureText(text);
+      ctx.fillText(text, (cw - width) / 2, y);
+    }
   }
 
 }

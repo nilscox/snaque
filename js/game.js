@@ -15,6 +15,7 @@ class Game {
 
     this.snake = new Snake(new Point(rand(3, width - 6), rand(3, height - 6)), 3);
     this.fruit = new Fruit(this.randomFruitPosition());
+    this.score = 0;
   }
 
   onKeyDown(e) {
@@ -58,9 +59,11 @@ class Game {
     this.fruit.draw(this.canvas);
 
     if (this.gameOver) {
-      this.canvas.text('Game Over', 30, 'black', 80);
-      this.canvas.text('<press any key to restart>', 10, '#666', 190);
+      this.canvas.text('Game Over', { size: 30, color: 'black', y: 80 });
+      this.canvas.text('<press any key to restart>', { size: 10, color: '#666', y: 190 });
     }
+
+    this.canvas.text('score: ' + this.score, { size: 10, color: '#666', x: 5, y: 12 });
   }
 
   update() {
@@ -76,10 +79,13 @@ class Game {
     if (hp.x === fp.x && hp.y === fp.y) {
       this.snake.grow(2);
       this.fruit = new Fruit(this.randomFruitPosition());
+      this.score += 3;
     }
 
     if (this.snake.isDead(width, height))
       this.gameOver = true;
+    else
+      ++this.score;
   }
 
 }

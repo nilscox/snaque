@@ -11,8 +11,8 @@ const start = () => {
 const main = () => {
   const canvas = new Canvas(document.getElementById('canvas'));
 
-  canvas.text('SNAIQUE', 30, 'greenforest', 50);
-  canvas.text('<press any key to start>', 10, '#666', 190);
+  canvas.text('SNAIQUE', { size: 30, color: 'greenforest', y: 50 });
+  canvas.text('<press any key to start>', { size: 10, color: '#666', y: 190 });
 
   document.addEventListener('keydown', function listener() {
     document.removeEventListener('keydown', listener);
