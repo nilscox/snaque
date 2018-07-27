@@ -1,4 +1,4 @@
-class Fruit extends Rectangle {
+class Fruit extends Square {
 
   constructor(p) {
     super(p, 'yellow');

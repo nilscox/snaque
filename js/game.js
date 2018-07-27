@@ -1,32 +1,31 @@
 class Game {
 
-  constructor() {
-    this.canvas = new Canvas(document.getElementById('canvas'));
-    this.gameOver = false;
+  constructor(width, height) {
+    this.width = width;
+    this.height = height;
+
+    this.snake = null;
+    this.fruit = null;
+    this.score = null;
+    this.gameOver = null;
 
     this.init();
-    this.redraw();
 
     document.addEventListener('keydown', this.onKeyDown.bind(this));
   }
 
   init() {
-    const { width, height } = this.canvas.getDimensions();
+    const { width, height } = this;
 
     this.snake = new Snake(new Point(rand(3, width - 6), rand(3, height - 6)), 3);
     this.fruit = new Fruit(this.randomFruitPosition());
     this.score = 0;
+    this.gameOver = false;
   }
 
   onKeyDown(e) {
-    if (this.gameOver && e.key === ' ') {
-      this.gameOver = false;
-
-      this.init();
-      this.redraw();
-
-      return;
-    }
+    if (this.gameOver && e.key === ' ')
+      return this.init();
 
     const dir = e.key.toLowerCase().slice('Arrow'.length);
 
@@ -37,7 +36,7 @@ class Game {
   }
 
   randomFruitPosition() {
-    const { width, height } = this.canvas.getDimensions();
+    const { width, height } = this;
     const snakeCells = this.snake.getCells();
     const cells = [];
 
@@ -52,21 +51,18 @@ class Game {
     return availableCells[randIdx];
   }
 
-  redraw() {
-    this.canvas.clear();
-
-    this.snake.draw(this.canvas);
-    this.fruit.draw(this.canvas);
+  draw(canvas) {
+    this.snake.draw(canvas);
+    this.fruit.draw(canvas);
 
     if (this.gameOver) {
-      this.canvas.text('Game Over', { size: 30, color: 'black', y: 80 });
-      this.canvas.text('score: ' + this.score, { size: 15, color: 'black', y: 120 });
-      this.canvas.text('(best: ' + this.getHighScore() + ')', { size: 12, color: 'black', y: 140 });
-      this.canvas.text('<press space to restart>', { size: 10, color: '#666', y: 190 });
+      canvas.text('Game Over', { size: 30, color: 'black', y: 80 });
+      canvas.text('score: ' + this.score, { size: 15, color: 'black', y: 120 });
+      canvas.text('(best: ' + this.getHighScore() + ')', { size: 12, color: 'black', y: 140 });
+      canvas.text('<press space to restart>', { size: 10, color: '#666', y: 190 });
     } else {
-      this.canvas.text('score: ' + this.score, { size: 10, color: '#666', x: 5, y: 12 });
+      canvas.text('score: ' + this.score, { size: 10, color: '#666', x: 5, y: 12 });
     }
-
   }
 
   update() {
@@ -77,7 +73,7 @@ class Game {
 
     const hp = this.snake.head.position;
     const fp = this.fruit.position;
-    const { width, height } = this.canvas.getDimensions();
+    const { width, height } = this;
 
     if (hp.x === fp.x && hp.y === fp.y) {
       this.snake.grow(2);

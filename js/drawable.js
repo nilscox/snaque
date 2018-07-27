@@ -1,6 +1,6 @@
 class Drawable {
 
-  draw() {
+  draw(canvas) {
     throw new Error('not implemented');
   }
 

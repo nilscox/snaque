@@ -1,9 +1,11 @@
-const start = () => {
-  const game = new Game();
+const start = (canvas) => {
+  const { width, height } = canvas.getGridDimensions();
+  const game = new Game(width, height);
 
   requestAnimationFrame(function frame() {
     game.update();
-    game.redraw();
+    canvas.clear();
+    game.draw(canvas);
     setTimeout(() => requestAnimationFrame(frame), 100);
   });
 }
@@ -16,7 +18,7 @@ const main = () => {
 
   document.addEventListener('keydown', function listener() {
     document.removeEventListener('keydown', listener);
-    start();
+    start(canvas);
   });
 
 };

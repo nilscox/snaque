@@ -1,12 +1,16 @@
 class Canvas {
 
+  static CELL_SIZE() {
+    return 10;
+  }
+
   constructor(domCanvas) {
     this.domCanvas = domCanvas;
     this.context = this.domCanvas.getContext('2d');
   }
 
-  getDimensions() {
-    const size = Rectangle.SIZE();
+  getGridDimensions() {
+    const size = Canvas.CELL_SIZE();
 
     return {
       width: this.domCanvas.width / size,
@@ -20,8 +24,9 @@ class Canvas {
     this.context.clearRect(0, 0, width, height);
   }
 
-  rect(p, size, color) {
+  square(p, color) {
     const { context: ctx } = this;
+    const size = Canvas.CELL_SIZE();
 
     ctx.fillStyle = color;
     ctx.fillRect(p.x * size, p.y * size, size, size);

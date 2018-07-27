@@ -1,4 +1,4 @@
-class SnakeHead extends Rectangle {
+class SnakeHead extends Square {
 
   constructor(p) {
     super(p, 'blue');
@@ -6,7 +6,7 @@ class SnakeHead extends Rectangle {
 
 }
 
-class SnakeBody extends Rectangle {
+class SnakeBody extends Square {
 
   constructor(p) {
     super(p, 'magenta');
