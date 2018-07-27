@@ -3,7 +3,9 @@
 Le but de ce projet est de réaliser un petit jeu en Javascript :
 [https://fr.wikipedia.org/wiki/Snake_(jeu_vid%C3%A9o)](snake).
 
-## Scope
+## Introduction
+
+### Scope
 
 Pour commencer, nous allons devoir définir un périmètre (scope *in english*). Le
 périmètre est l'ensemble des fonctionnalités devant être implémentées pour
@@ -57,7 +59,7 @@ n'est plus affiché), le score maximal atteint au cours des parties, ainsi qu'un
 message l'invitant à appuyer sur espace pour rejouer. Lorsqu'il appuie sur
 espace, son PC explose... mais non, le jeu recommence bien sur.
 
-## Découpage du projet
+### Découpage du projet
 
 Nous aurons une approche "bottom-up", c'est à dire que nous commencerons par
 mettre en place les briques de bases, que nous ferons évoluer au fur et à mesure
@@ -81,3 +83,51 @@ mettre en place :
 - gestion du score
 - fin de partie
 - écran de bienvenue
+
+### Structure du projet
+
+Le projet est réalisé sous forme de page web, le point d'entrée sera donc un
+fichier `index.html`, et les fichiers JavaScript y seront linkés. Cette
+structure est donnée à titre indicatif, il est possible de la modifier, ou même
+de choisir un organisation différente.
+
+```
+.
+├── index.html: point d'entrée
+└── js
+    ├── utils.js: définition d'outils utilitaires
+    ├── drawable.js: classe Drawable
+    ├── rectangle.js: classe Rectangle
+    ├── snake.js: classe Snake
+    ├── fruit.js: classe Fruit
+    ├── canvas.js: classe Canvas
+    ├── game.js: classe Game
+    └── main.js: initialisation du jeu
+```
+
+### Remarques
+
+La solution fait ~650 lignes de code, et est écrite avec la syntaxe ES6 et le
+mot clé `class` du JavaScript. Il est tout à fait possible de réaliser ce projet
+en ES5, ou même dans un autre langage de programmation.
+
+Pour utiliser la syntaxe ES6 sans passer par un compilateur, il est possible
+d'utiliser [babel](https://babeljs.io/) directement dans le navigateur, avec :
+
+```html
+<body>
+  <script type="text/javascript" src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+  <script type="text/babel" src="js/some-es6-file.js"></script>
+</body>
+```
+
+Il est aussi possible d'utiliser
+[`livereload`](https://www.npmjs.com/package/livereload), un package node
+permettant de reload automatiquement la page quand un fichier source est
+sauvegardé.
+
+## Gettin' started
+
+## Boucle de jeu
+
+## Finalisation
