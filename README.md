@@ -1,7 +1,7 @@
 # Snaique
 
 Le but de ce projet est de réaliser un petit jeu en Javascript :
-[https://fr.wikipedia.org/wiki/Snake_(jeu_vid%C3%A9o)](snake).
+[snake](https://fr.wikipedia.org/wiki/Snake_(jeu_vid%C3%A9o)).
 
 ## Introduction
 
