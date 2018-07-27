@@ -189,6 +189,10 @@ prototype: Canvas.constructor(domCanvas: Canvas)
 domCanvas: the <canvas /> DOM element
 ```
 
+Le fichier principal qui va charger le jeu est le `main.js`. Pour le moment, il
+nous pouvons l'utiliser pour instancier le `Canvas` et tester le code, mais il
+sera utilisé plus tard pour l'écran de bienvenue et le lancement du jeu.
+
 Les éléments du jeu sont positionés sur le canvas, à une position donnée en
 pixels. Le jeu en revanche, traite les position de ses éléments sur une grille.
 La grille est composée de cellules, dont le ratio avec les pixels est une valeur
@@ -235,7 +239,8 @@ Si la position x du texte n'est pas donnée, alors elle est
 [calculée](https://www.w3schools.com/tags/canvas_measuretext.asp) pour centrer
 le texte sur le canvas.
 
-Enfin, la méthode `clear()` n'a pas besoin d'arguments et ne renvoie rien.
+Enfin, la méthode `clear()` n'a pas besoin d'arguments et ne renvoie rien. Elle
+efface la totalité du canvas.
 
 ```
 prototype: Canvas.clear()
@@ -308,8 +313,8 @@ ref color: 'yellow'
 ### Le serpent
 
 La classe `Snake` représente un serpent, composé d'une tête de bouts de corps.
-Elle hérite elle aussi de `Drawable`, mais override sa méthode `draw()` pour
-appeller celles de sa tête et de ses bouts de corps.
+Elle hérite elle aussi de `Drawable`, et override sa méthode `draw()` pour
+appeller celles de sa tête et de ses éléments de son corps.
 
 ```
 prototype: Snake.constructor(p: Point, size: number)
@@ -360,7 +365,8 @@ prototype: Game.init()
 Après avoir implémenté les bases du code, nous remontons de plus en plus dans la
 partie "up" du design "bottom-up". Nous allons maintenant faire la dernière
 fonction de dessin, qui va se charger de l'affichage de tous les éléments du
-jeu.
+jeu. Elle doit afficher le serpent, le fruit et le score. Le score est dans la
+réf à `{ size: 10, color: '#666', x: 5, y: 12 }`.
 
 ```
 prototype: Game.draw(canvas: Canvas)
@@ -368,11 +374,5 @@ canvas: the canvas where to draw the game
 ```
 
 ## Boucle de jeu
-
-### start ?
-
-Le fichier principal qui va charger le jeu (et plus tard afficher l'écran de
-bienvenue), est le fichier `main.js`. Pour le moment, il ne fera qu'instancier
-un `Game` et appeler sa méthode `init()`.
 
 ## Finalisation
