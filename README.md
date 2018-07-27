@@ -107,9 +107,24 @@ de choisir un organisation différente.
 
 ### Remarques
 
-La solution fait ~650 lignes de code, et est écrite avec la syntaxe ES6 et le
-mot clé `class` du JavaScript. Il est tout à fait possible de réaliser ce projet
-en ES5, ou même dans un autre langage de programmation.
+Dans le prototype des fonctions données, les variables sont annotées d'un type.
+La description des paramètres et de la valeur de retour est donnée ensuite. Par
+exemple :
+
+```
+prototype: foo(name: string, score: number) -> boolean
+name: the player's first name
+score: the player's current score
+returns: true if the player has a cool name
+```
+
+Le nom de la fonction à implémenter est `foo`, elle prend deux paramètres, une
+string et un entier, et retourne un booléen.
+
+La solution fait ~250 lignes de code réparties dans ~30 fonctions, et est écrite
+avec la syntaxe ES6 et le mot clé `class` du JavaScript. Il est tout à fait
+possible de réaliser ce projet en ES5, ou même dans un autre langage de
+programmation.
 
 Pour utiliser la syntaxe ES6 sans passer par un compilateur, il est possible
 d'utiliser [babel](https://babeljs.io/) directement dans le navigateur, avec :
@@ -126,8 +141,238 @@ Il est aussi possible d'utiliser
 permettant de reload automatiquement la page quand un fichier source est
 sauvegardé.
 
+Les valeurs utilisées dans la solutions (couleurs, tailles, ...) sont donnés
+à titre indicatif également.
+
 ## Gettin' started
 
+Tout d'abord, nous avons besoin d'un index.html. Il s'occupera de définir un
+élément `<canvas>`, et d'inclure tous les `.js`. De plus, il peut afficher une
+bordure autour du canvas en CSS, directement inline dans le HTML. La réf définit
+les dimensions du canvas à 200x200.
+
+Nous allons commencer par définir des bouts de code utilitaires dont nous nous
+servirons plus tard dans le jeu. Nous aurons besoin d'une fonction `rand()`,
+permettant de générer un nombre aléatoire, et une classe `Point`, qui
+représentera un point `(x, y)`.
+
+```
+prototype: rand(min: number, max: number) -> number
+a: the minimum value
+b: the maximum value
+returns: a random integer bewteen min and max
+```
+
+```
+prototype: Point.constructor(x: number, y: number)
+x: the point's x coordinate
+y: the point's y coordinate
+```
+
+```
+prototype: Point.eql(point: Point) -> boolean
+point: another point
+returns: true if the x and y coordinates are matches the point
+```
+
+## Dessine moi un serpent
+
+### Canvas
+
+Pour faciliter le dessin du jeu, nous allons utiliser une classe `Canvas`, qui
+s'occupera de gérer l'élement canvas du DOM et de dessiner juste ce dont on a
+besoin. Elle conservera deux attributs : `domCanvas` (l'élément `<canvas>` du
+DOM), et `context` (le Context2D du canvas).
+
+```
+prototype: Canvas.constructor(domCanvas: Canvas)
+domCanvas: the <canvas /> DOM element
+```
+
+Les éléments du jeu sont positionés sur le canvas, à une position donnée en
+pixels. Le jeu en revanche, traite les position de ses éléments sur une grille.
+La grille est composée de cellules, dont le ratio avec les pixels est une valeur
+constante. Cette valeur est accessible via une méthode statique du canvas.
+
+```
+prototype: static Canvas.CELL_SIZE() -> number
+returns: the size of a cell (ref: 10)
+```
+
+Le `Canvas` nous permettra de récupérer la taille de la grille.
+
+```
+prototype: Canvas.getGridDimensions() -> { width: number, height: number }
+returns: an object with keys "width" and "height"
+```
+
+Les méthodes permettant réellement de dessiner sont au nombre de trois, une pour
+dessiner un carré, une pour du texte, et la dernière pour tout effacer.
+Toutes les instances de `Point` passés en arguments à ces méthodes représentent
+un point sur la grille, et non pas en pixels.
+
+```
+prototype: Canvas.square(p: Point, size: number)
+p: the square's position on the grid
+color: the square's color
+```
+
+```
+prototype: Canvas.text(p: Point, opts: {
+  size: number,
+  x: number,
+  y: number,
+  color: string,
+})
+p: the square's position on the grid
+opts.size: the text's font size
+opts.x: the text's x coordinate (optional)
+opts.y: the text's y coordinate
+opts.color: the text's color
+```
+
+Si la position x du texte n'est pas donnée, alors elle est
+[calculée](https://www.w3schools.com/tags/canvas_measuretext.asp) pour centrer
+le texte sur le canvas.
+
+Enfin, la méthode `clear()` n'a pas besoin d'arguments et ne renvoie rien.
+
+```
+prototype: Canvas.clear()
+```
+
+### Dessinable
+
+Certains éléments du jeu peuvent être représentés sur le canvas. Ces éléments
+sont représentés par des classes qui héritent toutes de la classe `Drawable`.
+
+`Drawable` est en réalité une
+[interface](https://en.wikipedia.org/wiki/Interface_(computing)). Elle ne
+définie qu'une seule méthode, `draw(canavas)`. Cette méthode doit impérativement
+être overridée par ses classes enfants. Elle est donc définie comme tel :
+
+```js
+class Drawable {
+
+  draw(canvas) {
+    throw new Error('not implemented');
+  }
+
+}
+```
+
+Voyons maintenant ces éléments "dessinables".
+
+### Le carré
+
+En effet, les éléments du jeu sont représentés par des carrés. Nous allons avoir
+besoin d'une classe qui hérite de `Drawable`, et override sa méthode `draw()`
+pour afficher un carré.
+
+```
+prototype: Square.constructor(position: Point, color: string)
+position: the square's position
+color: the square's color
+```
+
+```
+prototype: draw(canvas: Canvas)
+canvas: the canvas where to draw the square
+```
+
+### Les éléments carrés
+
+Les éléments représentés par un seul carrés sont : la tête du serpent, un des
+membres du corps du serpent, et le fruit. Tous ces éléments héritent de la
+classe `Square`. Les valeur des couleurs utilisées dans la réf sont données
+après les prototypes des constructeurs.
+
+```
+prototype: SnakeHead.constructor(position: Point)
+position: the snake's head position
+ref color: 'blue'
+```
+
+```
+prototype: SnakeBody.constructor(position: Point)
+position: the snake's body position
+ref color: 'magenta'
+```
+
+```
+prototype: Fruit.constructor(position: Point)
+position: the fruit's position
+ref color: 'yellow'
+```
+
+### Le serpent
+
+La classe `Snake` représente un serpent, composé d'une tête de bouts de corps.
+Elle hérite elle aussi de `Drawable`, mais override sa méthode `draw()` pour
+appeller celles de sa tête et de ses bouts de corps.
+
+```
+prototype: Snake.constructor(p: Point, size: number)
+p: the snake's head position
+size: the snake's initial number body parts
+```
+
+```
+prototype: Snake.draw(canvas: Canvas)
+canvas: the canvas where to draw the snake
+```
+
+### Game
+
+Le code principal se trouve dans la classe `Game`. Cette classe gère l'affichage
+du jeu, la mise à jour des éléments, la gestion du score, la fin de partie, ...
+Bref, la *game loop*. Un game est dessinable, il va donc hériter de `Drawable`.
+Pour l'instant, nous allons juste implémenter son constructor, ainsi que sa
+méthode `draw()`, pour l'afficher.
+
+Le constructeur va initialiser les attributs nécéssaires à la gestion du jeu. Il
+peut leur affecter la valeur `null` pour le moment.
+
+- `width`: la largeur de la grille de jeu
+- `height`: la hauteur de la grille de jeu
+- `snake`: le serpent (Snake)
+- `fruit`: un fruit (Fruit)
+- `score`: le score actuel (number)
+- `gameOver`: l'état du jeu (boolean)
+
+```
+prototype: Game.constructor(width: number, height: number)
+width: the grid's width
+height: the grid's height
+```
+
+La fonction d'initialisation nous permettra de remettre à zéro les valeurs du
+jeu, pour commencer (ou recommencer) une partie. Elle va instancier un nouveau
+`Snake` à une position aléatoire sur la grille (attention tout de même à donner
+assez de marge pour dessiner les 3 cases initiales du corps), ainsi qu'un
+nouveau fruit, à une position aléatoire. Pour le moment, il n'est pas nécéssaire
+de gérer le cas ou le fruit apparait sur une case occupée par le serpent.
+
+```
+prototype: Game.init()
+```
+
+Après avoir implémenté les bases du code, nous remontons de plus en plus dans la
+partie "up" du design "bottom-up". Nous allons maintenant faire la dernière
+fonction de dessin, qui va se charger de l'affichage de tous les éléments du
+jeu.
+
+```
+prototype: Game.draw(canvas: Canvas)
+canvas: the canvas where to draw the game
+```
+
 ## Boucle de jeu
+
+### start ?
+
+Le fichier principal qui va charger le jeu (et plus tard afficher l'écran de
+bienvenue), est le fichier `main.js`. Pour le moment, il ne fera qu'instancier
+un `Game` et appeler sa méthode `init()`.
 
 ## Finalisation
