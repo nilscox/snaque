@@ -452,4 +452,69 @@ Si la direction donnée en parmètre de `go()` est opposée à la direction
 actuelle, alors la `nextDirection` du serpent est annulée. Cela lui évitera de
 se ramper dessus.
 
+### Manger des fruits
+
+Nous avons maintenant toutes les clés en mains pour gérer le ramassage de fruits
+par le serpent. Lorsque le serpent mange un fruit, son corps grandit de deux
+cases au cours des deux prochaines frames. C'est à dire que l'on va avoir :
+
+- frame 0 : la tête du serpent passe sur un fruit
+- frame 1 : la tête du serpent avance, mais le bout de la queue reste à la même place
+- frame 2 : la tête du serpent avance, mais le bout de la queue reste à la même place
+- frame 3 : la tête du serpent avance, et la dernière partie du corps du serpent prend la place de l'avant dernière
+
+Ainsi, le serpent aura grandi de deux cases. Pour implémenter cette logique de
+jeu, le serpent aura besoin de se souvenir combien de casses il lui reste à
+grandir, décrémenter ce nombre à chaque appel à `move()`, et ajouter un nouveau
+morceau de corps. Cet attribut est appelé `growLeft`, et est initialisé à zéro
+dans le constructeur. Le serpent est capable de grandir, et cela se traduit par
+une méthode `grow()`.
+
+```
+prototype: Snake.grow(n: number)
+n: the number of cells that the snake will grow of
+```
+
+Si on évalue :
+
+```js
+snake.grow(3);
+snake.move();
+snake.move();
+snake.grow(1);
+```
+
+la valeur de `snake.growLeft` sera donc de `2`.
+
+Pour terminer, il nous faut bien appeler `grow()` quelque part, et créer un
+nouveau fruit...
+
+### RIP
+
+Nous pouvons presque presque jouer, il ne nous manque plus qu'une fin de partie.
+Le serpent a deux façons de mourir :
+
+- si sa tête sort du jeu
+- si sa tête passe par l'une des cases de son corps.
+
+Avant d'implémenter la fonction qui vérifira si le serpent est mort, nous allons
+nous faciliter la tâche en répondant à une question un peu plus simples :
+quelles cases occupent le serpent ? Une méthode `getCells()` de la classe
+`Snake` serait bien utile.
+
+```
+prototype: Snake.getCells() -> Point[]
+returns: the celles containing a part of the snake
+```
+
+```
+prototype: Snake.isDead() -> boolean
+returns: true if the snake is dead
+```
+
+Pour vérifier que notre fonction fonctionne, nous pouvons simplement utiliser
+l'attribut `gameOver` de la classe `Game`. Si la partie est terminé, il ne
+faudra plus faire avancer le jeu (cette vérification peut être faite au tout
+début de la fonction `update()`).
+
 ## Finalisation
