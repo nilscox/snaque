@@ -365,8 +365,7 @@ prototype: Game.init()
 Après avoir implémenté les bases du code, nous remontons de plus en plus dans la
 partie "up" du design "bottom-up". Nous allons maintenant faire la dernière
 fonction de dessin, qui va se charger de l'affichage de tous les éléments du
-jeu. Elle doit afficher le serpent, le fruit et le score. Le score est dans la
-réf à `{ size: 10, color: '#666', x: 5, y: 12 }`.
+jeu : le serpent, et le fruit.
 
 ```
 prototype: Game.draw(canvas: Canvas)
@@ -508,7 +507,9 @@ returns: the celles containing a part of the snake
 ```
 
 ```
-prototype: Snake.isDead() -> boolean
+prototype: Snake.isDead(width: number, height: number) -> boolean
+width: the grid's width
+height: the grid's height
 returns: true if the snake is dead
 ```
 
@@ -518,3 +519,56 @@ faudra plus faire avancer le jeu (cette vérification peut être faite au tout
 début de la fonction `update()`).
 
 ## Finalisation
+
+Le coeur du *snaque* est maintenant en place. Les élémets restants à implémenter
+sont :
+
+- la gestion du score
+- la gestion de la position du fruit
+- l'écran de fin de partie
+- l'écran de bienvenue
+- la gestion du highscore
+
+### Score
+
+Le joueur gagne 1 point à chaque frame, et 3 points à chaque fois que le serpent
+mange un fruit. Le score peut être affiché par le game avec les options
+`{ size: 10, color: '#666', x: 5, y: 12 }`.
+
+Acune autre déclaration de méthode n'est nécéssaire.
+
+### Position du fruit
+
+Pour le moment, nous choisissons une position aléatoire pour le fruit. Plus le
+serpent grandit, et plus il est probable que cette position tombe sur une des
+cases occupée par une partie du serpent, et le fruit ne serait pas visible tout
+de suite. Nous allons avoir besoin d'une fonction trouvant une case vide pour y
+ajouter un fruit.
+
+```
+prototype: Game.getRandomFruitPosition() -> Point
+returns: an empty cell's position
+```
+
+> Hint : la fonction `snake.getCells()` peut peut-être nous servir...
+
+### Game Over
+
+Lorsque le serpent décède, le jeu doit afficher un écran de fin de partie,
+invitant le joueur à rejouer appuiant sur espace.
+
+Les valeurs des options utilisées pour dessiner les textes de l'écran de game
+over sont :
+
+```
+"Game Over" : { size: 30, color: 'black', y: 80 }
+"score" : { size: 15, color: 'black', y: 120 }
+"<press space to restart>" { size: 10, color: '#666', y: 190 }
+```
+
+### Welcome
+
+
+
+### Highscore
+
