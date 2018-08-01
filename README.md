@@ -375,4 +375,81 @@ canvas: the canvas where to draw the game
 
 ## Boucle de jeu
 
+Un jeu qui ne bouge pas, c'est une image. Faisons bouger un peu tout ça...
+
+C'est maintenant que nous allons mettre en place le point d'entrée du JS,
+c'est-à-dire le code qui sera éxécuté en tout premier. Ce code se trouve dans le
+fichier `main.js`.
+
+La fonction `start()` créer un nouveau game, et va appeler
+[`setInterval`](https://www.w3schools.com/jsref/met_win_setinterval.asp), dans
+le but d'éxécuter une fonction en particulier. Cette fonction est une *inner
+function* de la fonction `start()`, et s'apelle `frame`. Elle ne prend pas de
+paramètre, et va simplement effacer le canvas et (re-)dessiner le jeu.
+
+```
+prototype: start(canvas: Canvas)
+canvas: the canvas where to draw the game
+```
+
+### Mise à jour
+
+A chaque frame, nous allons calculer les nouvelles positions des éléments du
+jeu. La classe `Game` a besoin d'une nouvelle méthode, `update()`, qui est
+appelée à chaque frame, avant le dessin du jeu. Cette fonction va pour le moment
+simplement appeler la fonction `move()` du serpent.
+
+
+```
+prototype: Game.update()
+```
+
+```
+prototype: Snake.move()
+```
+
+La méthode `move()` du serpent va faire évoluer sa position d'une case en
+fonction de sa direction actuelle. Le serpent va devoir mémoriser la direction
+dans laquelle is se déplace. Son constructeur peut déclarer un attribut
+`direction`, qui est à `left` par défaut.
+
+A chaque fois que le joueur appuie sur une flèche du clavier, le serpent
+enregistrera cette direction dans un attribut `nextDirection`. Nous pouvons
+l'initialiser à `null` dans le constructeur.
+
+A chaque fois que la fonction `move()` est appelée, le serpent remplace la
+valeur de `direction` par celle de `nextDirection` si nécéssaire. Chaque partie
+de son corps est déplacée vers la position de sa suivante, et la tête avance
+d'une case dans la direction du serpent.
+
+Protip : pour tester, il est possible de donner une `nextDirection` aléatoire
+dans la fonction `frame()`, afin d'obtenir un serpent fou :
+
+```
+game.snake.nextDirection = ['left', 'right', 'up', 'down'][~~(Math.random() * 4)]
+```
+
+### Take control
+
+Next step : gérer les événements utilisateurs (les touches du clavier). La
+classe `Game` se charge d'écouter les événements clavier, via sa méthode
+`onKeyDown()`. A chaque fois qu'une flèche est appuiée, la direction du serpent
+doit évoluer en conséquence, via sa méthode `go()` (mais le déplacement dans
+cette nouvelle direction ne sera visible qu'à la prochaine frame). L'event
+listener peut être enregistré depuis le constructeur du `Game`.
+
+```
+prototype: Game.onKeyDown(e: Event)
+e: the event
+```
+
+```
+prototype: Snake.go(direction: string)
+direction: the snake's next move direction
+```
+
+Si la direction donnée en parmètre de `go()` est opposée à la direction
+actuelle, alors la `nextDirection` du serpent est annulée. Cela lui évitera de
+se ramper dessus.
+
 ## Finalisation
