@@ -391,6 +391,11 @@ prototype: start(canvas: Canvas)
 canvas: the canvas where to draw the game
 ```
 
+La fonction principale s'apelle `main()`, c'est la seule fontction applée dans
+le scope globale, ce qui en fait le *pont d'entrée* du programme. Elle se
+chargera pour l'instant de créer une instance de `Canvas`, et appelle `start()`.
+Plus tard, elle s'occupera aussi de l'écran d'accueil.
+
 ### Mise à jour
 
 A chaque frame, nous allons calculer les nouvelles positions des éléments du
@@ -568,7 +573,54 @@ over sont :
 
 ### Welcome
 
+Lorsque le joueur lance le jeu, il est tout de suite dans une partie. Il n'a pas
+trop le temps de réagir... Pour concidérer notre `snaque` comme un vrai jeu, il
+lui manque un écran d'accueil, proposant de démarrer une partie.
 
+Cet écran ne fait pas vraiment partie de la boucle de jeu, et ne sera donc pas
+géré par la classe `Game`.
+
+Il ne faut modifier que la fonction `main()` pour afficher le message de
+bienvenue et indiquer au joueur qu'il peut démarrer une partie (`start()`) avec
+une touche du clavier.
+
+Textes :
+
+```
+"SNAIQUE": { size: 30, color: 'greenforest', y: 50 }
+"<press any key to start>": { size: 10, color: '#666', y: 190 }
+```
 
 ### Highscore
 
+La partie finale de ce projet permettra de faire gagner en longévité à notre
+jeu, en affichant le meilleur score atteint au cours des dernières parties sur
+l'écran de game over, dans le but de motiver le joueur à lancer une nouvelle
+partie...
+
+Le meilleur score est stocké dans le
+[`localStorage`](https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage).
+A chaque fin de partie, le `Game` va enregistrer le nouveau score si celui-ci
+est suppérieur au score actuel. Le `Game` va donc permettre un accès au meilleur
+score via deux méthodes : `getHighscore()` et `setHighscore()`.
+
+```
+prototype: Game.getHighscore() -> number
+returns: the highscore
+```
+
+```
+prototype: Game.setHighscore(score: number)
+score: the score
+```
+
+## Fin
+
+Le jeu est terminé et doit maintenant respecter les spécifications données en
+introduction. Pour continuer, il est possible d'y ajouter par exemple :
+
+- la mise en pause du jeu
+- une animation fluide
+- des vrai dessins
+- de l'audio
+- ...
