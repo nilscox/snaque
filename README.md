@@ -212,9 +212,12 @@ returns: an object with keys "width" and "height"
 
 Les méthodes permettant réellement de dessiner sont au nombre de trois, une pour
 dessiner un carré de la taille d'une cellule de la grille, une pour du texte, et
-la dernière pour tout effacer. Toutes les instances de `Point` passés en
-arguments à ces méthodes représentent un point sur la grille, et non pas en
-pixels.
+la dernière pour tout effacer.
+
+Toutes les instances de `Point` passés en arguments à ces méthodes représentent
+un point sur la grille, et non pas en pixels. C'est à dire que si l'instance du
+`Point` passé à `Canvas.square` sont `(3, 1)`, alors le carré sera dessiné à la
+position `(30px, 10px)` sur le canvas.
 
 ```
 prototype: Canvas.square(p: Point, color: string)
