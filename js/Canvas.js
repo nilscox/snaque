@@ -11,7 +11,7 @@ class Canvas {
   }
 
   getGridDimensions() {
-    return {width: this.canvas.width, height: this.canvas.height};
+    return {width: this.canvas.width / Canvas.CELLS_SIZE(), height: this.canvas.height / Canvas.CELLS_SIZE()};
   }
 
   square(p, color) {

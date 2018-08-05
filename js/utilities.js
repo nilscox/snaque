@@ -4,6 +4,10 @@ const rand = (min, max) => {
   return Math.floor(Math.random() * (max - min)) + min;
 }
 
+const getRandomPoint = (min, max) => {
+  return new Point(rand(min, max), rand(min, max));    
+}
+
 class Point {
   constructor(x, y) {
     this.x = x;

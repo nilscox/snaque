@@ -9,6 +9,7 @@ class Game extends Drawable {
 
     this.snake = null;
     this.fruit = null;
+
     this.score = null;
     this.gameOver = false;
 
@@ -16,44 +17,67 @@ class Game extends Drawable {
   }
 
   init() {
-    const x1 = rand(3, 17);
-    const y1 = rand(3, 17);
-
-    const x2 = rand(1, 21);
-    const y2 = rand(1, 21);
-
-    const snakePoint = new Point(x1, y1);
-    const fruitPoint = new Point(x2, y2);
-
-    this.snake = new Snake(snakePoint, 3);
-    this.fruit = new Fruit(fruitPoint);
+    this.snake = this.createSnake();
+    this.fruit = this.createFruit();
 
     this.score = 0;
     this.gameOver = false;
+  }
 
+  createSnake() {
+    const x = rand(3, 17);
+    const y = rand(3, 17);
+    
+    const snakePoint = new Point(x, y);
+
+    return new Snake(snakePoint, 3);
+  }
+
+  createFruit() {
+    let newPosition = getRandomPoint(1, 20);
+    const isSnake = this.snake.getCells();
+
+    for (let i = 0; i < isSnake.length - 1; i++) {
+      if (newPosition.x === isSnake[i].x, newPosition.y === isSnake[i].y) {
+        newPosition = getRandomPoint(1, 20);
+      }  
+    }
+
+    return new Fruit(newPosition);
   }
 
   update() {
-    this.snake.move();
+    if (!this.gameOver) {
+      this.snake.move();
+
+      if (this.snake.head.position.x === this.fruit.position.x && this.snake.head.position.y === this.fruit.position.y) {
+        this.fruit = this.createFruit();
+        this.snake.grow(2);
+      }
+
+      if (this.snake.isDead(this.width, this.height)) {
+        this.gameOver = true;
+        console.log('Game Over');
+      };
+    }
   }
 
   onKeyDown(e) {
     switch (e.key) {
       case 'ArrowRight':
-        this.snake.nextDirection = 'right';
+        this.snake.go('right');
         break;
       case 'ArrowLeft':
-        this.snake.nextDirection = 'left';
+        this.snake.go('left');
         break;
       
       case 'ArrowUp':
-        this.snake.nextDirection = 'up';
+        this.snake.go('up');
         break;
       
       case 'ArrowDown':
-        this.snake.nextDirection = 'down';
-        break;
-      
+        this.snake.go('down');
+        break;   
     }
   }
 

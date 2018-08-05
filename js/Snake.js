@@ -18,6 +18,8 @@ class Snake extends Drawable {
 
     this.size = size;
 
+    this.growLeft = 0;
+
     this.head = new SnakeHead(position);
     this.body = this.getBody();
 
@@ -35,7 +37,52 @@ class Snake extends Drawable {
     return body;
   }
 
+  grow(n) {
+    this.growLeft += n;
+    for (let i = 0; i < n; i++){
+      const bodyPart = new SnakeBody(new Point(this.body[this.body.length - 1].position.x, this.body[this.body.length - 1].position.y));
+      this.body.push(bodyPart);
+    }
+    this.size += n;
+  }
+
+  getCells() {
+    const cells = [];
+
+    cells.push(this.head.position);
+
+    for (let i = 0; i < this.body.length - 1; i++) {
+      cells.push(this.body[i].position);
+    }
+
+    return cells;
+  }
+
+  isDead(width, height) {
+    const isSnake = this.getCells();
+    isSnake.splice(0, 1);
+
+    //head position doit être entre (0, 0) et (20, 20);
+
+    if (this.head.position.x < 0 || this.head.position.x > width) {
+      return true;
+      
+    } else if (this.head.position.y < 0 || this.head.position.y > height) {
+      return true;
+
+    } else if (isSnake.find(b => b.x === this.head.position.x && b.y === this.head.position.y )) {
+      return true;
+
+    } else {
+      return false;
+    }
+  }
+
   move() {
+    if (this.growLeft > 0) {
+      this.growLeft -= 1;
+    }
+
     function oposite(direction) {
       const op = {
         'left': 'right',
@@ -52,7 +99,7 @@ class Snake extends Drawable {
       }
     }
 
-    if (this.nextDirection === this.direction || this.nextDirection === oposite(this.direction)) {
+    if (this.nextDirection === oposite(this.direction)) {
       this.nextDirection = null;
     }
 
@@ -86,9 +133,15 @@ class Snake extends Drawable {
     }
   }
 
-  draw(canvas) {
-    let body = null;
+  go(direction) {
+    if (this.direction === direction) {
+      this.nextDirection = null;
+    }
 
+    this.nextDirection = direction;
+  }
+
+  draw(canvas) {
     this.head.draw(canvas);
 
     for (let i = 0; i < this.size - 1; i++) {

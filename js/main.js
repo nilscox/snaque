@@ -1,7 +1,7 @@
 'use strict';
 
 function start(canvas) {
-  const game = new Game(canvas.canvas.width, canvas.canvas.height);
+  const game = new Game(canvas.getGridDimensions().width, canvas.getGridDimensions().height);
 
   game.init();
   game.draw(canvas);
