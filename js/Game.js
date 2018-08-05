@@ -11,6 +11,8 @@ class Game extends Drawable {
     this.fruit = null;
     this.score = null;
     this.gameOver = false;
+
+    document.addEventListener('keydown', (e) => this.onKeyDown(e));
   }
 
   init() {
@@ -33,6 +35,26 @@ class Game extends Drawable {
 
   update() {
     this.snake.move();
+  }
+
+  onKeyDown(e) {
+    switch (e.key) {
+      case 'ArrowRight':
+        this.snake.nextDirection = 'right';
+        break;
+      case 'ArrowLeft':
+        this.snake.nextDirection = 'left';
+        break;
+      
+      case 'ArrowUp':
+        this.snake.nextDirection = 'up';
+        break;
+      
+      case 'ArrowDown':
+        this.snake.nextDirection = 'down';
+        break;
+      
+    }
   }
 
   draw(canvas) {

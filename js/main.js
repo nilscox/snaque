@@ -8,7 +8,6 @@ function start(canvas) {
 
   function frame() {
     canvas.clear();
-    game.snake.nextDirection = ['left', 'right', 'up', 'down'][~~(Math.random() * 4)];
     game.update();
     game.draw(canvas);
   }
