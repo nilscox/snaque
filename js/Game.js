@@ -100,10 +100,10 @@ class Game extends Drawable {
         break;
 
       case ' ':
-        if (this.gameOver) {
+        if(this.gameOver) {
           this.init();
         }
-        break; 
+        break;
     }
   }
 
@@ -115,7 +115,7 @@ class Game extends Drawable {
       canvas.text('<press space to restart>', { size: 10, color: '#666', y: 190 });
     }
 
-    canvas.text(this.score, { size: 10, color: '#666', x: 5, y: 12 })
+    canvas.text(this.score, { size: 10, color: '#666', x: 190, y: 12 })
     this.fruit.draw(canvas);
     this.snake.draw(canvas);
   }
