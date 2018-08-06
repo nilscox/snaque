@@ -20,9 +20,10 @@ class Canvas {
   }
 
   text(text, opts) {
-    opts.x = opts.x || (this.canvas.width / 2) - this.ctx.mesureText(opts.size).width;
+    opts.x = opts.x || (this.canvas.width / 2) - this.ctx.measureText(opts.size).width / 2;
 
     this.ctx.font = opts.size;
+    this.ctx.textAlign = 'center';
     this.ctx.fillStyle = opts.color;
     this.ctx.fillText(text, opts.x, opts.y);
   }

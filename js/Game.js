@@ -59,7 +59,6 @@ class Game extends Drawable {
 
       if (this.snake.isDead(this.width, this.height)) {
         this.gameOver = true;
-        console.log('Game Over');
       };
     }
   }
@@ -84,6 +83,12 @@ class Game extends Drawable {
   }
 
   draw(canvas) {
+    if (this.gameOver) {
+      canvas.text('Game Over', { size: 30, color: 'black', y: 80 });
+      canvas.text(this.score, { size: 15, color: 'black', y: 120 })
+      canvas.text('<press space to restart>', { size: 10, color: '#666', y: 190 });
+    }
+
     canvas.text(this.score, { size: 10, color: '#666', x: 5, y: 12 })
     this.fruit.draw(canvas);
     this.snake.draw(canvas);
