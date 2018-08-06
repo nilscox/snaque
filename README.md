@@ -223,13 +223,13 @@ color: the square's color
 ```
 
 ```
-prototype: Canvas.text(p: Point, opts: {
+prototype: Canvas.text(text: string, opts: {
   size: number,
   x: number,
   y: number,
   color: string,
 })
-p: the square's position on the grid
+text: the text
 opts.size: the text's font size
 opts.x: the text's x coordinate (optional)
 opts.y: the text's y coordinate
