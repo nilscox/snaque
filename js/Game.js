@@ -46,20 +46,39 @@ class Game extends Drawable {
     return new Point(fruitPosition.x, fruitPosition.y);
   }
 
-  update() {
-    if (!this.gameOver) {
-      this.snake.move();
-      this.score += 1;
+  getHightScore() {
+    return localStorage.getItem('bestScore');
+  }
 
-      if (this.snake.head.position.x === this.fruit.position.x && this.snake.head.position.y === this.fruit.position.y) {
-        this.fruit = new Fruit(this.getRandomFruitPosition());
-        this.snake.grow(2);
-        this.score += 3;
+  setHightScore() {
+    return localStorage.setItem('bestScore', this.score);
+  }
+
+  update() {
+    if (this.gameOver) {
+      return;
+    }
+
+    this.snake.move();
+    this.score += 1;
+
+    if (this.snake.head.position.x === this.fruit.position.x && this.snake.head.position.y === this.fruit.position.y) {
+      this.fruit = new Fruit(this.getRandomFruitPosition());
+      this.snake.grow(2);
+      this.score += 3;
+    }
+
+    if (this.snake.isDead(this.width, this.height)) {
+      this.gameOver = true;
+      const bestScore = this.getHightScore();
+
+      if (bestScore !== null) {
+        if (bestScore > this.score) {
+          return;
+        }
       }
 
-      if (this.snake.isDead(this.width, this.height)) {
-        this.gameOver = true;
-      };
+      this.setHightScore();
     }
   }
 
@@ -78,7 +97,13 @@ class Game extends Drawable {
       
       case 'ArrowDown':
         this.snake.go('down');
-        break;   
+        break;
+
+      case ' ':
+        if (this.gameOver) {
+          this.init();
+        }
+        break; 
     }
   }
 
@@ -86,6 +111,7 @@ class Game extends Drawable {
     if (this.gameOver) {
       canvas.text('Game Over', { size: 30, color: 'black', y: 80 });
       canvas.text(this.score, { size: 15, color: 'black', y: 120 })
+      canvas.text(`Best score: ${this.getHightScore()}`, { size: 10, color: 'black', y: 150 })
       canvas.text('<press space to restart>', { size: 10, color: '#666', y: 190 });
     }
 
