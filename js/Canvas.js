@@ -23,7 +23,7 @@ class Canvas {
     opts.x = opts.x || (this.canvas.width / 2) - this.ctx.mesureText(opts.size).width;
 
     this.ctx.font = opts.size;
-    this.ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
+    this.ctx.fillStyle = opts.color;
     this.ctx.fillText(text, opts.x, opts.y);
   }
 
