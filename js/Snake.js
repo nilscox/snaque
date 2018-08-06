@@ -62,12 +62,10 @@ class Snake extends Drawable {
     const isSnake = this.getCells();
     isSnake.splice(0, 1);
 
-    //head position doit être entre (0, 0) et (20, 20);
-
-    if (this.head.position.x < 0 || this.head.position.x > width) {
+    if (this.head.position.x < 0 || this.head.position.x >= width) {
       return true;
       
-    } else if (this.head.position.y < 0 || this.head.position.y > height) {
+    } else if (this.head.position.y < 0 || this.head.position.y >= height) {
       return true;
 
     } else if (isSnake.find(b => b.x === this.head.position.x && b.y === this.head.position.y )) {
