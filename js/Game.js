@@ -38,7 +38,7 @@ class Game extends Drawable {
     const isSnake = this.snake.getCells();
 
     for (let i = 0; i < isSnake.length - 1; i++) {
-      if (fruitPosition.x === isSnake[i].x, fruitPosition.y === isSnake[i].y) {
+      if (fruitPosition.eql(isSnake[i])) {
         fruitPosition = getRandomPoint(1, 20);
       }  
     }

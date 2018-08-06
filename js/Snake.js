@@ -68,7 +68,7 @@ class Snake extends Drawable {
     } else if (this.head.position.y < 0 || this.head.position.y >= height) {
       return true;
 
-    } else if (isSnake.find(b => b.x === this.head.position.x && b.y === this.head.position.y )) {
+    } else if (isSnake.find(b => b.eql(this.head.position))) {
       return true;
 
     } else {
