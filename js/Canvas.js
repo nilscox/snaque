@@ -19,12 +19,17 @@ class Canvas {
     this.ctx.fillRect(p.x * Canvas.CELLS_SIZE(), p.y * Canvas.CELLS_SIZE(), Canvas.CELLS_SIZE(), Canvas.CELLS_SIZE());
   }
 
-  text(p, opts) {
-    opts.x = x || (this.canvas.width / 2) - this.ctx.mesureText(opts.size).width;
+  text(text, opts) {
+    opts.x = opts.x || (this.canvas.width / 2) - this.ctx.mesureText(opts.size).width;
+
+    this.ctx.font = opts.size;
+    this.ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
+    this.ctx.fillText(text, opts.x, opts.y);
   }
 
   clear() {
-    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height); 
   }
+
 }
 

@@ -18,7 +18,7 @@ class Game extends Drawable {
 
   init() {
     this.snake = this.createSnake();
-    this.fruit = this.createFruit();
+    this.fruit = new Fruit(this.getRandomFruitPosition());
 
     this.score = 0;
     this.gameOver = false;
@@ -33,26 +33,28 @@ class Game extends Drawable {
     return new Snake(snakePoint, 3);
   }
 
-  createFruit() {
-    let newPosition = getRandomPoint(1, 20);
+  getRandomFruitPosition() {
+    let fruitPosition = getRandomPoint(1, 20);
     const isSnake = this.snake.getCells();
 
     for (let i = 0; i < isSnake.length - 1; i++) {
-      if (newPosition.x === isSnake[i].x, newPosition.y === isSnake[i].y) {
-        newPosition = getRandomPoint(1, 20);
+      if (fruitPosition.x === isSnake[i].x, fruitPosition.y === isSnake[i].y) {
+        fruitPosition = getRandomPoint(1, 20);
       }  
     }
 
-    return new Fruit(newPosition);
+    return new Point(fruitPosition.x, fruitPosition.y);
   }
 
   update() {
     if (!this.gameOver) {
       this.snake.move();
+      this.score += 1;
 
       if (this.snake.head.position.x === this.fruit.position.x && this.snake.head.position.y === this.fruit.position.y) {
-        this.fruit = this.createFruit();
+        this.fruit = new Fruit(this.getRandomFruitPosition());
         this.snake.grow(2);
+        this.score += 3;
       }
 
       if (this.snake.isDead(this.width, this.height)) {
@@ -82,6 +84,7 @@ class Game extends Drawable {
   }
 
   draw(canvas) {
+    canvas.text(this.score, { size: 10, color: '#666', x: 5, y: 12 })
     this.fruit.draw(canvas);
     this.snake.draw(canvas);
   }
