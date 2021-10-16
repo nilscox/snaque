@@ -12,6 +12,7 @@ class Game extends Drawable {
 
     this.score = null;
     this.gameOver = false;
+    this.isPaused = false;
 
     document.addEventListener('keydown', (e) => this.onKeyDown(e));
   }
@@ -22,6 +23,7 @@ class Game extends Drawable {
 
     this.score = 0;
     this.gameOver = false;
+    this.isPaused = false;
   }
 
   createSnake() {
@@ -66,7 +68,7 @@ class Game extends Drawable {
   }
 
   update() {
-    if (this.gameOver) {
+    if (this.gameOver || this.isPaused) {
       return;
     }
 
@@ -108,6 +110,12 @@ class Game extends Drawable {
           this.init();
         }
         break;
+
+      case 'p':
+        if (!this.gameOver) {
+          this.isPaused = !this.isPaused;
+        }
+        break;
     }
   }
 
@@ -120,8 +128,15 @@ class Game extends Drawable {
       canvas.text(this.score, { size: 15, color: 'black', y: 120 });
       canvas.text(`Best score: ${this.getHightScore()}`, { size: 10, color: 'black', y: 150 });
       canvas.text('<press space to restart>', { size: 10, color: '#666', y: 190 });
-    } else {
-      canvas.text(this.score, { size: 10, color: '#666', x: 190, y: 12 });
+
+      return;
+    }
+
+    canvas.text(this.score, { size: 10, color: '#666', x: 190, y: 12 });
+
+    if (this.isPaused) {
+      canvas.text('Game Paused', { size: 30, color: 'black', y: 80 });
+      canvas.text('<press p to resume>', { size: 10, color: '#666', y: 190 });
     }
   }
 }
