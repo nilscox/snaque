@@ -7,30 +7,28 @@ class SnakeHead extends Square {
 }
 
 class SnakeBody extends Square {
- constructor(position) {
+  constructor(position) {
     super(position, 'darkgreen');
-  } 
+  }
 }
 
 class Snake extends Drawable {
   constructor(position, size) {
     super();
 
-    this.size = size;
-
     this.growLeft = 0;
 
     this.head = new SnakeHead(position);
-    this.body = this.getBody();
+    this.body = this.getBody(size);
 
     this.direction = 'left';
     this.nextDirection = null;
   }
 
-  getBody() {
+  getBody(size) {
     const body = [];
 
-    for (let i = 0; i < this.size - 1; i++) {
+    for (let i = 0; i <= size - 1; i++) {
       body.push(new SnakeBody(new Point(this.head.position.x + i + 1, this.head.position.y)));
     }
 
@@ -39,11 +37,6 @@ class Snake extends Drawable {
 
   grow(n) {
     this.growLeft += n;
-    for (let i = 0; i < n; i++){
-      const bodyPart = new SnakeBody(new Point(this.body[this.body.length - 1].position.x, this.body[this.body.length - 1].position.y));
-      this.body.push(bodyPart);
-    }
-    this.size += n;
   }
 
   getCells() {
@@ -64,11 +57,11 @@ class Snake extends Drawable {
 
     if (this.head.position.x < 0 || this.head.position.x >= width) {
       return true;
-      
+
     } else if (this.head.position.y < 0 || this.head.position.y >= height) {
       return true;
 
-    } else if (isSnake.find(b => b.eql(this.head.position))) {
+    } else if (isSnake.find((b) => b.eql(this.head.position))) {
       return true;
 
     } else {
@@ -76,28 +69,30 @@ class Snake extends Drawable {
     }
   }
 
+  isOppositeDirection(direction) {
+    const opposite = {
+      left: 'right',
+      right: 'left',
+      up: 'down',
+      down: 'up',
+    };
+
+    return direction === opposite[this.direction];
+  }
+
   move() {
     if (this.growLeft > 0) {
+      const bodyPart = new SnakeBody(
+        new Point(
+          this.body[this.body.length - 1].position.x,
+          this.body[this.body.length - 1].position.y
+        )
+      );
+      this.body.push(bodyPart);
       this.growLeft -= 1;
     }
 
-    function oposite(direction) {
-      const op = {
-        'left': 'right',
-        'right': 'left',
-        'up': 'down',
-        'down': 'up',
-      };
-
-      const keys = Object.keys(op);
-      for (let i = 0; i < keys.length; i++) {
-        if (keys[i] === direction) {
-          return op[keys[i]]
-        }
-      }
-    }
-
-    if (this.nextDirection === oposite(this.direction)) {
+    if (this.isOppositeDirection(this.nextDirection)) {
       this.nextDirection = null;
     }
 
@@ -107,7 +102,7 @@ class Snake extends Drawable {
 
     this.nextDirection = null;
 
-    for (let i = this.body.length - 1; i > 0 ; i--) {
+    for (let i = this.body.length - 1; i > 0; i--) {
       this.body[i].position = this.body[i - 1].position;
     }
     this.body[0].position = this.head.position;
@@ -132,7 +127,7 @@ class Snake extends Drawable {
   }
 
   go(direction) {
-    if (this.direction === direction) {
+    if (this.isOppositeDirection(direction)) {
       this.nextDirection = null;
     }
 
@@ -142,9 +137,8 @@ class Snake extends Drawable {
   draw(canvas) {
     this.head.draw(canvas);
 
-    for (let i = 0; i < this.size - 1; i++) {
+    for (let i = 0; i < this.body.length - 1; i++) {
       this.body[i].draw(canvas);
     }
   }
-  
 }

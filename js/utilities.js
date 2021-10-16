@@ -2,11 +2,11 @@
 
 const rand = (min, max) => {
   return Math.floor(Math.random() * (max - min)) + min;
-}
+};
 
-const getRandomPoint = (min, max) => {
-  return new Point(rand(min, max), rand(min, max));    
-}
+const getRandomPoint = ({ x: [minX, maxX], y: [minY, maxY] }) => {
+  return new Point(rand(minX, maxX), rand(minY, maxY));
+};
 
 class Point {
   constructor(x, y) {
@@ -15,10 +15,6 @@ class Point {
   }
 
   eql(point) {
-    if (this.x === point.x && this.y === point.y) {
-      return true;
-    }
-    return false;
+    return this.x === point.x && this.y === point.y;
   }
 }
-

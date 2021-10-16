@@ -2,7 +2,7 @@
 
 class Game extends Drawable {
   constructor(width, height) {
-    super(); 
+    super();
 
     this.width = width;
     this.height = height;
@@ -25,33 +25,44 @@ class Game extends Drawable {
   }
 
   createSnake() {
-    const x = rand(3, 17);
-    const y = rand(3, 17);
-    
-    const snakePoint = new Point(x, y);
+    const snakeSize = 3;
+    const snakePoint = getRandomPoint({
+      x: [snakeSize, this.width - snakeSize],
+      y: [snakeSize, this.height - snakeSize],
+    });
 
-    return new Snake(snakePoint, 3);
+    return new Snake(snakePoint, snakeSize);
   }
 
   getRandomFruitPosition() {
-    let fruitPosition = getRandomPoint(1, 20);
-    const isSnake = this.snake.getCells();
+    const snakeCells = this.snake.getCells();
+    const cells = [];
 
-    for (let i = 0; i < isSnake.length - 1; i++) {
-      if (fruitPosition.eql(isSnake[i])) {
-        fruitPosition = getRandomPoint(1, 20);
-      }  
+    for (let x = 0; x < this.width; x++) {
+      for (let y = 0; y < this.height; y++) {
+        cells.push(new Point(x, y));
+      }
     }
 
-    return new Point(fruitPosition.x, fruitPosition.y);
+    const availableCells = cells.filter(
+      (cell) => !snakeCells.find((snakeCell) => cell.eql(snakeCell))
+    );
+
+    return availableCells[rand(0, availableCells.length)];
   }
 
   getHightScore() {
-    return localStorage.getItem('bestScore');
+    return localStorage.getItem('bestScore') || 0;
   }
 
-  setHightScore() {
-    return localStorage.setItem('bestScore', this.score);
+  setHightScore(score) {
+    const bestScore = this.getHightScore();
+
+    if (bestScore !== null) {
+      if (score > bestScore) {
+        localStorage.setItem('bestScore', score);
+      }
+    }
   }
 
   update() {
@@ -62,7 +73,7 @@ class Game extends Drawable {
     this.snake.move();
     this.score += 1;
 
-    if (this.snake.head.position.x === this.fruit.position.x && this.snake.head.position.y === this.fruit.position.y) {
+    if (this.snake.head.position.eql(this.fruit.position)) {
       this.fruit = new Fruit(this.getRandomFruitPosition());
       this.snake.grow(2);
       this.score += 3;
@@ -70,15 +81,8 @@ class Game extends Drawable {
 
     if (this.snake.isDead(this.width, this.height)) {
       this.gameOver = true;
-      const bestScore = this.getHightScore();
 
-      if (bestScore !== null) {
-        if (bestScore > this.score) {
-          return;
-        }
-      }
-
-      this.setHightScore();
+      this.setHightScore(this.score);
     }
   }
 
@@ -90,17 +94,17 @@ class Game extends Drawable {
       case 'ArrowLeft':
         this.snake.go('left');
         break;
-      
+
       case 'ArrowUp':
         this.snake.go('up');
         break;
-      
+
       case 'ArrowDown':
         this.snake.go('down');
         break;
 
       case ' ':
-        if(this.gameOver) {
+        if (this.gameOver) {
           this.init();
         }
         break;
@@ -108,15 +112,16 @@ class Game extends Drawable {
   }
 
   draw(canvas) {
-    if (this.gameOver) {
-      canvas.text('Game Over', { size: 30, color: 'black', y: 80 });
-      canvas.text(this.score, { size: 15, color: 'black', y: 120 })
-      canvas.text(`Best score: ${this.getHightScore()}`, { size: 10, color: 'black', y: 150 })
-      canvas.text('<press space to restart>', { size: 10, color: '#666', y: 190 });
-    }
-
-    canvas.text(this.score, { size: 10, color: '#666', x: 190, y: 12 })
     this.fruit.draw(canvas);
     this.snake.draw(canvas);
+
+    if (this.gameOver) {
+      canvas.text('Game Over', { size: 30, color: 'black', y: 80 });
+      canvas.text(this.score, { size: 15, color: 'black', y: 120 });
+      canvas.text(`Best score: ${this.getHightScore()}`, { size: 10, color: 'black', y: 150 });
+      canvas.text('<press space to restart>', { size: 10, color: '#666', y: 190 });
+    } else {
+      canvas.text(this.score, { size: 10, color: '#666', x: 190, y: 12 });
+    }
   }
 }
