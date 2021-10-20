@@ -26,43 +26,40 @@ class Game extends Drawable {
     this.isPaused = false;
   }
 
-  createSnake() {
-    const snakeSize = 3;
-    const snakePoint = getRandomPoint({
+  getRandomPoint(snakeSize = 3) {
+    return getRandomPoint({
       x: [snakeSize, this.width - snakeSize],
       y: [snakeSize, this.height - snakeSize],
     });
+  }
+
+  createSnake() {
+    const snakeSize = 3;
+    const snakePoint = this.getRandomPoint(snakeSize);
 
     return new Snake(snakePoint, snakeSize);
   }
 
   getRandomFruitPosition() {
-    const snakeCells = this.snake.getCells();
-    const cells = [];
+    let cell = this.getRandomPoint(0);
 
-    for (let x = 0; x < this.width; x++) {
-      for (let y = 0; y < this.height; y++) {
-        cells.push(new Point(x, y));
-      }
+    if (this.snake.hasCell(cell)) {
+      return this.getRandomFruitPosition();
     }
 
-    const availableCells = cells.filter(
-      (cell) => !snakeCells.find((snakeCell) => cell.eql(snakeCell))
-    );
-
-    return availableCells[rand(0, availableCells.length)];
+    return cell;
   }
 
   getHightScore() {
-    return localStorage.getItem('bestScore') || 0;
+    return localStorage.getItem('bestScore') ?? 0;
   }
 
-  setHightScore(score) {
+  storeHightScore() {
     const bestScore = this.getHightScore();
 
     if (bestScore !== null) {
-      if (score > bestScore) {
-        localStorage.setItem('bestScore', score);
+      if (this.score > bestScore) {
+        localStorage.setItem('bestScore', this.score);
       }
     }
   }
@@ -84,7 +81,7 @@ class Game extends Drawable {
     if (this.snake.isDead(this.width, this.height)) {
       this.gameOver = true;
 
-      this.setHightScore(this.score);
+      this.storeHightScore();
     }
   }
 

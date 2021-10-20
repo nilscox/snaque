@@ -25,6 +25,10 @@ class Snake extends Drawable {
     this.nextDirection = null;
   }
 
+  get size() {
+    return this.body.length;
+  }
+
   getBody(size) {
     const body = [];
 
@@ -44,11 +48,15 @@ class Snake extends Drawable {
 
     cells.push(this.head.position);
 
-    for (let i = 0; i < this.body.length - 1; i++) {
+    for (let i = 0; i < this.size - 1; i++) {
       cells.push(this.body[i].position);
     }
 
     return cells;
+  }
+
+  hasCell(cell) {
+    return this.getCells().some((c) => c.eql(cell));
   }
 
   isDead(width, height) {
@@ -57,13 +65,10 @@ class Snake extends Drawable {
 
     if (this.head.position.x < 0 || this.head.position.x >= width) {
       return true;
-
     } else if (this.head.position.y < 0 || this.head.position.y >= height) {
       return true;
-
     } else if (isSnake.find((b) => b.eql(this.head.position))) {
       return true;
-
     } else {
       return false;
     }
@@ -82,12 +87,7 @@ class Snake extends Drawable {
 
   move() {
     if (this.growLeft > 0) {
-      const bodyPart = new SnakeBody(
-        new Point(
-          this.body[this.body.length - 1].position.x,
-          this.body[this.body.length - 1].position.y
-        )
-      );
+      const bodyPart = new SnakeBody(this.body[this.size - 1].position.clone());
       this.body.push(bodyPart);
       this.growLeft -= 1;
     }
@@ -102,7 +102,7 @@ class Snake extends Drawable {
 
     this.nextDirection = null;
 
-    for (let i = this.body.length - 1; i > 0; i--) {
+    for (let i = this.size - 1; i > 0; i--) {
       this.body[i].position = this.body[i - 1].position;
     }
     this.body[0].position = this.head.position;
@@ -137,7 +137,7 @@ class Snake extends Drawable {
   draw(canvas) {
     this.head.draw(canvas);
 
-    for (let i = 0; i < this.body.length - 1; i++) {
+    for (let i = 0; i < this.size - 1; i++) {
       this.body[i].draw(canvas);
     }
   }
